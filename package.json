@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "La implementacion de Go en Prolog",
   "scripts": {
-    "dev" : "next",
+    "dev": "next",
     "build": "next build",
     "start": "next start",
     "export": "next export",
@@ -14,11 +14,13 @@
   "dependencies": {
     "next": "^8.0.4",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "styled-components": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@storybook/react": "^5.0.6",
-    "babel-loader": "^8.0.5"
+    "babel-loader": "^8.0.5",
+    "babel-plugin-styled-components": "^1.10.0"
   }
 }
