@@ -1,19 +1,21 @@
 import React from 'react';
-import styled from 'styled-components'
+import styled from 'styled-components';
+import Color from 'color';
 
 const StyledButton = styled.button`
   position: relative;
+  padding: 0px;
+  margin: 0px;
   height: 51px;
   width: ${props => props.width};
-  border: 1px solid ${props => props.theme.colors.accentDark};
+  border: 1px solid ${props => Color(props.theme.colors.accent).desaturate(0.38).darken(0.18).hex()};
   border-radius: ${props => props.theme.radius};
   background-color: ${props => props.theme.colors.accent};
   color: white;
+  margin-top: 4px;
 
-  &.disabled{
-    margin-top: 4px;
-    border: 1px solid ${props => props.theme.colors.disabledDark};
-    background-color: ${props => props.theme.colors.disabled};
+  &.enabled{
+    margin-top: 0px;
   }
 
   &.enabled::before {
@@ -25,9 +27,9 @@ const StyledButton = styled.button`
     left: -1px;
     width: 100%;
     height: 100%;
-    background-color: ${props => props.theme.colors.accentDark};
+    background-color: ${props => Color(props.theme.colors.accent).desaturate(0.38).darken(0.18).hex()};
     border-radius: ${props => props.theme.radius};
-    border: 1px solid ${props => props.theme.colors.accentDark};
+    border: 1px solid ${props => Color(props.theme.colors.accent).desaturate(0.38).darken(0.18).hex()};
     box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.15);
   }
 
@@ -51,18 +53,10 @@ const StyledButton = styled.button`
 `;
 
 export default class PrimaryButton extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = {state: this.props.disabled ? 'disabled' : 'enabled'};
-  }
-
   static defaultProps = {
     theme: {
       colors:{
-        accent: '#ED5757',
-        accentDark: '#BF4949',
-        disabled: '#9A9A9A',
-        disabledDark : '#737373'
+        accent: '#ED5757'
       },
       radius: '3px'
     },
@@ -74,7 +68,7 @@ export default class PrimaryButton extends React.Component {
       <StyledButton
         theme={this.props.theme}
         width={this.props.width}
-        className={this.state.state}
+        className={this.props.disabled ? '' : 'enabled'}
       >
         {this.props.children}
       </StyledButton>
