@@ -1,7 +1,7 @@
 {
   "name": "golog",
   "version": "1.0.0",
-  "description": "La implementacion de Go en Prolog",
+  "description": "Frontend of Go's implementation in Prolog",
   "scripts": {
     "dev": "next",
     "build": "next build",
@@ -22,6 +22,7 @@
     "@babel/core": "^7.4.3",
     "@storybook/react": "^5.0.6",
     "babel-loader": "^8.0.5",
-    "babel-plugin-styled-components": "^1.10.0"
+    "babel-plugin-styled-components": "^1.10.0",
+    "classnames": "^2.2.6"
   }
 }

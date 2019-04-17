@@ -1,11 +1,13 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import PrimaryButton from '../components/PrimaryButton'
+import buttonTest from './buttonTest';
 
-storiesOf('Primary Button', module)
-  .add('with text', () => (
-    <PrimaryButton>Hello Button</PrimaryButton>
-  ))
-  .add('with emoji', () => (
-    <PrimaryButton disabled><span role="img" aria-label="so cool">😀 😎 👍 💯</span></PrimaryButton>
+import PrimaryButton from '../components/PrimaryButton';
+import FlatButton from '../components/FlatButton';
+
+
+buttonTest('Primary Button', PrimaryButton);
+buttonTest('Flat Button', FlatButton)
+  .add('Secondary', () => (
+    <FlatButton width="200px" secondary>Secondary</FlatButton>
   ));
