@@ -15,8 +15,10 @@ const StyledCaption = styled(Caption)`
 const StyledInput = styled.input`
   ${BodyCopyStyle}
   margin-top: 4px;
+  padding: 6px 0 6px 16px;
+  background-color: ${props => props.theme.color.lightDark2};
+  border: 1px solid ${props => props.theme.color.lightDark4};
   border-radius: 3px;
-  padding: 6px 0 6px 16px
 `
 
 const UserInput = (props) => (
@@ -25,7 +27,7 @@ const UserInput = (props) => (
       <StyledSVG src='/static/icons/User.svg' svgStyle={{width:'14px', height:'14px'}}/>
       <StyledCaption light>Jugador blancas</StyledCaption>
     </div>
-    <StyledInput placeholder="Nombre"/>
+    <StyledInput/>
   </div>
 )
 
