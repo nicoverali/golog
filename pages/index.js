@@ -4,6 +4,8 @@ import Button from '../components/utils/Button';
 import SVG from '../components/utils/SVG';
 import Competitor from '../components/Competitor';
 import UserInput from '../components/UserInput';
+import {ThemeProvider} from 'styled-components';
+import theme from '../components/theme';
 
 export default class App extends React.Component{
 
@@ -26,11 +28,13 @@ export default class App extends React.Component{
     }
 
     return (
-      <div style={{width:'270px'}}>
-        {button}
-        <UserInput></UserInput>
-        <Competitor icon="User" name="Nicolas"/>
-      </div>
+      <ThemeProvider theme={theme}>
+        <div style={{width:'270px'}}>
+          {button}
+          <UserInput></UserInput>
+          <Competitor icon="User" name="Nicolas"/>
+        </div>
+      </ThemeProvider>
     )
   }
 

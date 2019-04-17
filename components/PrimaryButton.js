@@ -10,8 +10,8 @@ function getDarker(color){
 
 const PrimaryButton = styled(Button)`
   margin-top: 4px;
-  border: 1px solid ${props => getDarker(props.theme.color.disable)};
-  background-color: ${props => props.theme.color.disable};
+  border: 1px solid ${props => getDarker(props.theme.color.disabled)};
+  background-color: ${props => props.theme.color.disabled};
   position: relative;
   padding: 0px;
   margin: 0px;
@@ -64,7 +64,7 @@ PrimaryButton.defaultProps = {
   theme: {
     color:{
       accent: '#ED5757',
-      disable: '#9A9A9A'
+      disabled: '#9A9A9A'
     }
   }
 }
