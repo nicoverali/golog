@@ -1,19 +1,19 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import buttonTest from './buttonTest';
+import testButton from './TestButton';
+import testTypography from './TestTypography';
 
 import PrimaryButton from '../components/PrimaryButton';
 import FlatButton from '../components/FlatButton';
 import Competitor from '../components/Competitor';
 
 
-buttonTest('Primary Button', PrimaryButton);
-buttonTest('Flat Button', FlatButton)
-  .add('Secondary', () => (
-    <FlatButton width="200px" secondary>Secondary</FlatButton>
-  ));
+testButton('Primary Button', PrimaryButton);
+testButton('Flat Button', FlatButton, {secondary: 'secondary'})
 
 storiesOf('Competitor', module)
   .add('Usuario comun', () => (
     <Competitor icon="User"/>
-  ))
+  ));
+
+testTypography();

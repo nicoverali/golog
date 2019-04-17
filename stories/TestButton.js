@@ -1,11 +1,11 @@
 import { storiesOf } from '@storybook/react';
 
-export default (name, Component) => {
+export default (name, Component, otherProps = {}) => {
   function handleClick(){
     console.log('Clicked !');
   }
 
-  return storiesOf(name, module)
+  let stories = storiesOf(name, module)
   .add('With text', () => (
     <Component width="160px">Hello Button</Component>
   ))
@@ -23,4 +23,14 @@ export default (name, Component) => {
   .add('With click handler but disabled', () => (
     <Component width='270px' handleClick={handleClick} disabled>Check console</Component>
   ));
+
+  for(let prop in otherProps){
+    let obj = {};
+    obj[prop] = true;
+    stories.add(`With prop ${otherProps[prop]}`, () => (
+      <Component width='270px' {...obj}>Button with {otherProps[prop]}</Component>
+    ))
+  }
+
+  return stories;
 }
