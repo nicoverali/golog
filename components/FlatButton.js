@@ -17,7 +17,8 @@ const FlatButton = styled(Button)`
   color: white;
 
   &:hover{
-    background-color: ${props => getDarker(props.theme.color.accent)}
+    background-color: ${props => getDarker(props.theme.color.accent)};
+    border-color: ${props => getDarker(props.theme.color.accent)};
   }
 
   ${props => props.secondary && css`
