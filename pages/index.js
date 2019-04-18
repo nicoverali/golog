@@ -1,43 +1,26 @@
-import PrimaryButton from '../components/PrimaryButton';
-import FlatButton from '../components/FlatButton';
-import Button from '../components/utils/Button';
-import SVG from '../components/utils/SVG';
-import Competitor from '../components/Competitor';
-import UserInput from '../components/UserInput';
+import {Fragment} from 'react';
 import {ThemeProvider} from 'styled-components';
 import theme from '../components/theme';
-import {WhiteStone, BlackStone} from '../components/Stone';
+import Head from 'next/head';
+
+import MainSection from '../components/MainSection';
+import TextSectionBody from '../components/TextSectionBody';
+import PrimaryButton from '../components/PrimaryButton';
 
 export default class App extends React.Component{
 
-  constructor(props){
-    super(props);
-    this.state = {secondary:false};
-  }
-
-  handleClick(){
-    this.setState({secondary:!this.state.secondary});
-  }
-
   render(){
-    let button;
-    if(this.state.secondary){
-      button = (<FlatButton handleClick={() => this.handleClick()} secondary>Jugar !</FlatButton>)
-    }
-    else{
-      button = (<FlatButton handleClick={() => this.handleClick()}>Jugar !</FlatButton>)
-    }
-
     return (
-      <ThemeProvider theme={theme}>
-        <div style={{width:'270px'}}>
-          {button}
-          <UserInput></UserInput>
-          <Competitor icon="User" name="Nicolas"/>
-          <WhiteStone/>
-          <BlackStone/>
-        </div>
-      </ThemeProvider>
+      <Fragment>
+        <Head>
+          <link href="https://fonts.googleapis.com/css?family=Arvo:400,700|Open+Sans:300,400,600,700" rel="stylesheet"/>
+        </Head>
+        <ThemeProvider theme={theme}>
+          <MainSection title="Golog." logo>
+            <TextSectionBody text="La implementacion de Go en Prolog" buttonText="Jugar"/>
+          </MainSection>
+        </ThemeProvider>
+      </Fragment>
     )
   }
 
