@@ -6,6 +6,7 @@ import Competitor from '../components/Competitor';
 import UserInput from '../components/UserInput';
 import {ThemeProvider} from 'styled-components';
 import theme from '../components/theme';
+import {WhiteStone, BlackStone} from '../components/Stone';
 
 export default class App extends React.Component{
 
@@ -33,6 +34,8 @@ export default class App extends React.Component{
           {button}
           <UserInput></UserInput>
           <Competitor icon="User" name="Nicolas"/>
+          <WhiteStone/>
+          <BlackStone/>
         </div>
       </ThemeProvider>
     )

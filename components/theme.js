@@ -9,7 +9,12 @@ export default {
     accent: '#EB5757',
     disable: '#9A9A9A',
     warning: '#D63031',
+
     board: '#E9CA8D',
-    boardDots: '#9F8653'
+    boardDots: '#9F8653',
+    whiteStone: '#FEFEFE',
+    whiteStoneBorder: '#DFDFDF',
+    blackStone: '#050505',
+    blackStoneBorder: '#2B2B2B'
   }
 }
