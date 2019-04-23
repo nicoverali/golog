@@ -49,7 +49,7 @@ const MainSection = ({logo, title, ...props}) => {
     <H2 css={TitleStyle}>{title}</H2>;
 
   return (
-    <StyledDiv>
+    <StyledDiv {...props}>
       <StyledTitleContainer>
         {Title}
       </StyledTitleContainer>
