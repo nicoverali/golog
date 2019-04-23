@@ -1,12 +1,14 @@
 import React from 'react';
 import App, {Container} from 'next/app';
+import { createGlobalStyle, ThemeProvider} from 'styled-components'
 import MainLayout from '../layouts/MainLayout';
-import { createGlobalStyle } from 'styled-components'
+import theme from '../components/theme';
 
 const GlobalStyle = createGlobalStyle`
   body {
     margin: 0px;
     overflow: hidden;
+    background-image: url('static/images/background.png');
   }
 `
 
@@ -16,9 +18,11 @@ export default class GologApp extends App {
     return (
       <Container>
         <GlobalStyle/>
-        <MainLayout>
-          <Component {...pageProps} />
-        </MainLayout>
+        <ThemeProvider theme={theme}>
+          <MainLayout>
+            <Component {...pageProps} />
+          </MainLayout>
+        </ThemeProvider>
       </Container>
 )
   }

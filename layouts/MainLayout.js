@@ -1,10 +1,8 @@
 import styled from 'styled-components';
-
 import Footer from '../components/Footer';
 
 
 const StyledDiv = styled.div`
-  background-image: url('static/images/background.png');
   height: 100vh;
   display: flex;
   flex-direction: column;
