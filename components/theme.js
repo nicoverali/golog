@@ -7,7 +7,7 @@ export default {
 
     primary: '#BCA371',
     accent: '#EB5757',
-    disable: '#9A9A9A',
+    disabled: '#9A9A9A',
     warning: '#D63031',
 
     board: '#E9CA8D',

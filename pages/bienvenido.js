@@ -4,7 +4,7 @@ import MultiButtonBody from '../components/bodies/MultiButtonBody';
 const buttonConfig = [
   {
     text: 'Un jugador',
-    href: '/juguemos'
+    href: '/juguemos-ia'
   },
   {
     text: 'Dos jugadores',
@@ -12,19 +12,10 @@ const buttonConfig = [
   }
 ]
 
-export default class App extends React.Component{
-
-  static getInitialProps(p){
-    console.log(p);
-    return {};
-  }
-
-  render(){
-    return (
-      <MainSection title="Bienvenido.">
+const Bienvenido = (props) => (
+      <MainSection title="Bienvenido." {...props}>
         <MultiButtonBody subtitle="Selecciona el modo de juego" buttonConfig={buttonConfig}/>
       </MainSection>
-    )
-  }
+)
 
-}
+export default Bienvenido;

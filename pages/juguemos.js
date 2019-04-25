@@ -1,24 +1,28 @@
 import MainSection from '../components/MainSection';
-import StartBody from '../components/bodies/StartBody';
+import CompetitorsBody from '../components/bodies/CompetitorsBody';
 
 const buttonConfig = {
-    text: 'Un jugador',
+    text: 'Comenzar',
     href: '/juguemos'
   };
 
-export default class App extends React.Component{
-
-  static getInitialProps(p){
-    console.log(p);
-    return {};
-  }
-
-  render(){
-    return (
-      <MainSection title="Jugemos.">
-        <StartBody subtitle="¿Podrás con nuestra IA?" competitors={[{icon:'User', name:'Nicolas'}, {icon:'Golguito', name:'Golguito'}]} buttonConfig={buttonConfig}/>
+const Jugemos = (props) => (
+      <MainSection title="Jugemos." {...props}>
+        <CompetitorsBody subtitle="Que gane el mejor" competitors={props.competitors} buttonConfig={buttonConfig}/>
       </MainSection>
-    )
-  }
+)
 
-}
+Jugemos.getInitialProps = (p) => ({
+  competitors: [
+    {
+      icon: 'User',
+      name: p.query.firstName
+    },
+    {
+      icon: 'User',
+      name: p.query.secondName
+    }
+  ]
+})
+
+export default Jugemos;

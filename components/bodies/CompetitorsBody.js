@@ -25,7 +25,7 @@ const QuoteStyle = css`
   margin: 0 42px;
 `
 
-const StartBody = ({subtitle, competitors, buttonConfig, ...props}) => (
+const CompetitorsBody = ({subtitle, competitors, buttonConfig, ...props}) => (
     <StyledDiv {...props}>
       <Subtitle>{subtitle}</Subtitle>
       <StyledCompetitorsDiv>
@@ -43,4 +43,4 @@ const StartBody = ({subtitle, competitors, buttonConfig, ...props}) => (
     </StyledDiv>
 )
 
-export default StartBody;
+export default CompetitorsBody;

@@ -21,14 +21,32 @@ const StyledInput = styled.input`
   border-radius: 3px;
 `
 
-const UserInput = (props) => (
-  <div>
-    <div>
-      <StyledSVG src='/static/icons/User.svg' svgStyle={{width:'14px', height:'14px'}}/>
-      <StyledCaption light>Jugador blancas</StyledCaption>
+const StyledWarningSpan = styled(Caption)`
+  display: block;
+  margin-top: 4px;
+  color: ${props => props.theme.color.warning};
+  opacity: 0;
+`
+
+const UserInput = ({name, handleChange, errorMessage, inputValue, ...props}) => {
+  let Warning;
+  if(errorMessage){
+    Warning = <StyledWarningSpan style={{opacity:1}} light>{errorMessage}</StyledWarningSpan>
+  }
+  else{
+    Warning = <StyledWarningSpan light>' '</StyledWarningSpan>
+  }
+
+  return (
+    <div {...props}>
+      <div>
+        <StyledSVG src='/static/icons/User.svg' svgStyle={{width:'14px', height:'14px'}}/>
+        <StyledCaption light>{name}</StyledCaption>
+      </div>
+      <StyledInput onChange={handleChange} value={inputValue}/>
+      {Warning}
     </div>
-    <StyledInput/>
-  </div>
-)
+  )
+}
 
 export default UserInput;
