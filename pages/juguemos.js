@@ -3,7 +3,7 @@ import CompetitorsBody from '../components/bodies/CompetitorsBody';
 
 const buttonConfig = {
     text: 'Comenzar',
-    href: '/juguemos'
+    href: '/go'
   };
 
 const Jugemos = (props) => (

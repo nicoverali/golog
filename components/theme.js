@@ -14,7 +14,7 @@ export default {
     boardDots: '#9F8653',
     whiteStone: '#FEFEFE',
     whiteStoneBorder: '#DFDFDF',
-    blackStone: '#050505',
-    blackStoneBorder: '#2B2B2B'
+    blackStone: '#1d1d1d',
+    blackStoneBorder: '#111'
   }
 }
