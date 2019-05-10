@@ -1,6 +1,8 @@
 import styled, {css} from 'styled-components';
 import Color from 'color';
-import {BlackStone} from './Stone';
+import {BlackStone, WhiteStone} from './Stone';
+
+const boardSize = 19;
 
 function getDarker(color){
   return Color(color).desaturate(0.38).darken(0.18).hex();
@@ -17,41 +19,40 @@ const StyledBoard = styled.div`
   box-sizing: border-box;
 `
 
-const StyledBoardCellContainer = styled.table`
+const StyledRow = styled.tr`
+  &:nth-of-type(3) td:nth-child(3)::after, &:nth-of-type(3) td:nth-child(9)::after, &:nth-of-type(3) td:nth-child(15)::after,
+  &:nth-of-type(9) td:nth-child(3)::after, &:nth-of-type(9) td:nth-child(9)::after, &:nth-of-type(9) td:nth-child(15)::after,
+  &:nth-of-type(15) td:nth-child(3)::after, &:nth-of-type(15) td:nth-child(9)::after, &:nth-of-type(15) td:nth-child(15)::after{
+    position: absolute;
+    right: -12%;
+    bottom: -12%;
+    content: '';
+    width: 24%;
+    height: 24%;
+    border-radius: 100%;
+    background-color: ${props => props.theme.color.boardDots};
+  }
+`
+
+const StyledBoardGridCellsContainer = styled.table`
   border: 2px solid #C4A76F;
   border-collapse: collapse;
   width: calc(100% - 24px*2);
   height: calc(100% - 24px*2);
   margin: 24px;
-
-  tr:nth-child(3),:nth-child(4){
-    position: absolute;
-    height: 100%;
-    background-color: red;
-  }
 `
 
-const StyledBoardCell = styled.td`
+
+const StyledBoardGridCell = styled.td`
   position: relative;
   border: 2px solid ${props => getDarker(props.theme.color.board)};
-
-  &::after{
-    position: absolute;
-    right: -10%;
-    bottom: -10%;
-    content: '';
-    width: 20%;
-    height: 20%;
-    border-radius: 100%;
-    background-color: ${props => props.theme.color.boardDots};;
-  }
 `
 
-const StyledGridCellContainer = styled.table`
+const StyledStonesContainer = styled.table`
   position: absolute;
   top: 0;
   left: 0;
-  padding: calc(24px - (100%/(19*2)));
+  padding: calc(24px - (100%/(${boardSize}*2)));
   width: 100%;
   height: 100%;
   border: none;
@@ -69,44 +70,76 @@ const StoneStyle = css`
   margin: 5%;
 `
 
-const Board = (props) => {
-  const boardSize = 19;
-  let boardCells = new Array();
-  let gridCells = new Array();
-  for(let i = 0; i < boardSize-1; i++){
-    let rowCells = [];
-    for (let j = 0; j < boardSize-1; j++) {
-      rowCells.push(<StyledBoardCell/>)
+export default class Board extends React.Component{
+  constructor(props) {
+    super(props);
+    this.state = {
+      board: (props.board || Array.from(Array(boardSize), () => new Array(boardSize).fill('#')))
     }
-    boardCells.push(<tr>{rowCells}</tr>);
-  }
-  for(let i = 0; i < boardSize; i++){
-    let rowCells = [];
-    for (let j = 0; j < boardSize; j++) {
-      if(i > 10){
-        rowCells.push(<td css={{position:'relative'}}></td>)
-      }
-      else{
-        rowCells.push(
-          <td css={{position:'relative'}}>
-            <BlackStone css={StoneStyle}></BlackStone>
-          </td>
-        )
-      }
-    }
-    gridCells.push(<tr>{rowCells}</tr>);
+    this.state.board[2][2] = 'b';
+    this.state.board[8][1] = 'w';
+    this.state.board[17][4] = 'b';
+
   }
 
-  return (
-    <StyledBoard {...props}>
-      <StyledBoardCellContainer>
-        {boardCells}
-      </StyledBoardCellContainer>
-      <StyledGridCellContainer>
-        {gridCells}
-      </StyledGridCellContainer>
-    </StyledBoard>
-  );
+  handleHover(e){
+    if(e.target.localName == 'td'){
+      const col = e.target.cellIndex;
+      const row = e.target.parentElement.rowIndex;
+      let newBoard = this.state.board;
+      if(newBoard[row][col] == '#'){
+        newBoard[row][col] = 'b';
+        this.setState({board: newBoard})
+      }
+    }
+  }
+
+  render(){
+    let stoneCells = this.state.board.map((row,rowIndex)=>(
+      <tr key={rowIndex}>
+        {this.state.board[rowIndex].map((item, colIndex) => (
+          <td onMouseOver={(e)=>this.handleHover(e)} key={colIndex} style={{position:'relative'}}>
+            {createStone(item, 'b', 'w')}
+          </td>
+        ))}
+      </tr>
+    ))
+
+    return (
+      <StyledBoard {...this.props}>
+        <StyledBoardGridCellsContainer>
+          <tbody>
+            {createBoardCells(this.state.board.length)}
+          </tbody>
+        </StyledBoardGridCellsContainer>
+        <StyledStonesContainer>
+          <tbody>
+            {stoneCells}
+          </tbody>
+        </StyledStonesContainer>
+      </StyledBoard>
+    )
+  }
 }
 
-export default Board;
+function createBoardCells(boardSize){
+  let grid = Array.from(Array(boardSize-1), () => new Array(boardSize-1).fill(''))
+  return grid.map((row,rowIndex) => (
+    <StyledRow key={rowIndex}>
+      {grid[rowIndex].map((column, colIndex) => (
+        <StyledBoardGridCell key={colIndex}/>
+      ))}
+    </StyledRow>
+  ))
+}
+
+function createStone(sym, blackSymbol, whiteSymbol){
+  switch (sym) {
+    case blackSymbol:
+      return <BlackStone css={StoneStyle}/>
+    case whiteSymbol:
+      return <WhiteStone css={StoneStyle}/>
+    default:
+      return null;
+  }
+}
