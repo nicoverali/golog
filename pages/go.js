@@ -1,7 +1,7 @@
 import Board from '../components/Board';
 
 const Go = (props) => (
-  <Board>
+  <Board blackSymbol='b' whiteSymbol='w' currentPlayer='w'>
   </Board>
 );
 

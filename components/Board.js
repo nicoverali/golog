@@ -11,8 +11,10 @@ function getDarker(color){
 const StyledBoard = styled.div`
   position: relative;
   background-color: ${props => props.theme.color.board};
-  width: 750px;
-  height: 750px;
+  width: 100%;
+  height: 100%;
+  max-width: 800px;
+  max-height: 800px;
   border-radius: 5px;
   box-shadow: 0 10px 0 ${props => getDarker(props.theme.color.board)};
   border: 3px solid ${props => getDarker(props.theme.color.board)};
@@ -24,8 +26,8 @@ const StyledRow = styled.tr`
   &:nth-of-type(9) td:nth-child(3)::after, &:nth-of-type(9) td:nth-child(9)::after, &:nth-of-type(9) td:nth-child(15)::after,
   &:nth-of-type(15) td:nth-child(3)::after, &:nth-of-type(15) td:nth-child(9)::after, &:nth-of-type(15) td:nth-child(15)::after{
     position: absolute;
-    right: -12%;
-    bottom: -12%;
+    right: -14%;
+    bottom: -14%;
     content: '';
     width: 24%;
     height: 24%;
@@ -68,29 +70,48 @@ const StoneStyle = css`
   width: auto;
   height: auto;
   margin: 5%;
+  opacity: 1;
+  transition: opacity 150ms ease-in-out;
+
+  &.hide{
+    opacity: 0;
+  }
+
+  &.hide:hover{
+    opacity: 0.5;
+  }
 `
 
 export default class Board extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      board: (props.board || Array.from(Array(boardSize), () => new Array(boardSize).fill('#')))
+      board: (props.board || Array.from(Array(boardSize), () => new Array(boardSize).fill(''))),
+      blackSymbol: props.blackSymbol,
+      whiteSymbol: props.whiteSymbol,
+      currentPlayer: props.currentPlayer
     }
-    this.state.board[2][2] = 'b';
-    this.state.board[8][1] = 'w';
-    this.state.board[17][4] = 'b';
-
   }
 
-  handleHover(e){
-    if(e.target.localName == 'td'){
-      const col = e.target.cellIndex;
-      const row = e.target.parentElement.rowIndex;
-      let newBoard = this.state.board;
-      if(newBoard[row][col] == '#'){
-        newBoard[row][col] = 'b';
-        this.setState({board: newBoard})
-      }
+  createBoardCells(){
+    let grid = Array.from(Array(boardSize-1), () => new Array(boardSize-1).fill(''))
+    return grid.map((row,rowIndex) => (
+      <StyledRow key={rowIndex}>
+        {grid[rowIndex].map((column, colIndex) => (
+          <StyledBoardGridCell key={colIndex}/>
+        ))}
+      </StyledRow>
+    ))
+  }
+
+  createStone(sym, extraClass = ''){
+    switch (sym) {
+      case this.state.blackSymbol:
+        return <BlackStone css={StoneStyle} className={extraClass}/>
+      case this.state.whiteSymbol:
+        return <WhiteStone css={StoneStyle} className={extraClass}/>
+      default:
+        return this.createStone(this.state.currentPlayer, 'hide')
     }
   }
 
@@ -98,8 +119,8 @@ export default class Board extends React.Component{
     let stoneCells = this.state.board.map((row,rowIndex)=>(
       <tr key={rowIndex}>
         {this.state.board[rowIndex].map((item, colIndex) => (
-          <td onMouseOver={(e)=>this.handleHover(e)} key={colIndex} style={{position:'relative'}}>
-            {createStone(item, 'b', 'w')}
+          <td key={colIndex} style={{position:'relative'}}>
+            {this.createStone(item)}
           </td>
         ))}
       </tr>
@@ -109,7 +130,7 @@ export default class Board extends React.Component{
       <StyledBoard {...this.props}>
         <StyledBoardGridCellsContainer>
           <tbody>
-            {createBoardCells(this.state.board.length)}
+            {this.createBoardCells(this.state.board.length)}
           </tbody>
         </StyledBoardGridCellsContainer>
         <StyledStonesContainer>
@@ -119,27 +140,5 @@ export default class Board extends React.Component{
         </StyledStonesContainer>
       </StyledBoard>
     )
-  }
-}
-
-function createBoardCells(boardSize){
-  let grid = Array.from(Array(boardSize-1), () => new Array(boardSize-1).fill(''))
-  return grid.map((row,rowIndex) => (
-    <StyledRow key={rowIndex}>
-      {grid[rowIndex].map((column, colIndex) => (
-        <StyledBoardGridCell key={colIndex}/>
-      ))}
-    </StyledRow>
-  ))
-}
-
-function createStone(sym, blackSymbol, whiteSymbol){
-  switch (sym) {
-    case blackSymbol:
-      return <BlackStone css={StoneStyle}/>
-    case whiteSymbol:
-      return <WhiteStone css={StoneStyle}/>
-    default:
-      return null;
   }
 }
