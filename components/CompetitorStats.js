@@ -3,13 +3,15 @@ import Competitor from './Competitor';
 import Stat from './Stat';
 
 const StyledContainer = styled.div`
-  height: 400px;
-  width: 500px;
+  display: inline-block;
+  height: 100%;
+  width: 100%;
   border: 1px solid ${props => props.theme.color.lightDark4};
 `
 
 const StyledBottomContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   height: 40%;
   justify-content: space-around;
   align-items: center;
