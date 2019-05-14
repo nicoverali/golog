@@ -23,7 +23,7 @@ const StyledSeparator = styled.hr`
 `
 
 const DoubleVerticalButtons = ({topButton, bottomButton, ...props}) => (
-  <div css={{margin:'0 auto', maxWidth:'224px', width:'auto', padding:'24px', textAlign:'center'}}>
+  <div css={{margin:'0 auto', maxWidth:'224px', width:'100%', padding:'24px', textAlign:'center'}}>
     {topButton}
     <StyledSeparator/>
     {bottomButton}

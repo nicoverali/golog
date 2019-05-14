@@ -12,7 +12,7 @@ const StyledBoard = styled.div`
   position: relative;
   background-color: ${props => props.theme.color.board};
   width: 100%;
-  height: 100%;
+  height: calc(100% - 10px);
   max-width: 800px;
   max-height: 800px;
   border-radius: 5px;
@@ -69,17 +69,16 @@ const StoneStyle = css`
   right: 0;
   width: auto;
   height: auto;
-  margin: 5%;
+  margin: 0%;
   opacity: 1;
   transition: opacity 150ms ease-in-out;
 
-  &.hide{
+  ${props => props.hide && css`
     opacity: 0;
-  }
-
-  &.hide:hover{
-    opacity: 0.5;
-  }
+    &:hover{
+      opacity: 0.7;
+    }
+  `}
 `
 
 export default class Board extends React.Component{
@@ -104,14 +103,16 @@ export default class Board extends React.Component{
     ))
   }
 
-  createStone(sym, extraClass = ''){
+  createStone(sym, posX, posY, hide){
     switch (sym) {
       case this.state.blackSymbol:
-        return <BlackStone css={StoneStyle} className={extraClass}/>
+        return <BlackStone css={StoneStyle} hide={hide}
+          onClick={() => hide ? this.props.onStonePlaced(posX, posY):null}/>
       case this.state.whiteSymbol:
-        return <WhiteStone css={StoneStyle} className={extraClass}/>
+        return <WhiteStone css={StoneStyle} hide={hide}
+          onClick={() => hide ? this.props.onStonePlaced(posX, posY):null}/>
       default:
-        return this.createStone(this.state.currentPlayer, 'hide')
+        return this.createStone(this.state.currentPlayer, rowIndex, colIndex, true)
     }
   }
 
@@ -120,7 +121,7 @@ export default class Board extends React.Component{
       <tr key={rowIndex}>
         {this.state.board[rowIndex].map((item, colIndex) => (
           <td key={colIndex} style={{position:'relative'}}>
-            {this.createStone(item)}
+            {this.createStone(item, rowIndex, colIndex)}
           </td>
         ))}
       </tr>

@@ -19,16 +19,16 @@ const StyledContainer = styled.div`
   }
 `
 
-const GoPlayState = ({handlePlay, handlePass, isAbleToPlay, ...props}) => {
+const GoPlayState = ({onPlay, onPass, isAbleToPlay, ...props}) => {
   console.log(isAbleToPlay);
   let topButton = (
-    <PrimaryButton handleClick={handlePlay} disabled={!isAbleToPlay}>
+    <PrimaryButton onClick={onPlay} disabled={!isAbleToPlay}>
       <ButtonText>Enviar jugada</ButtonText>
     </PrimaryButton>
   )
 
   let bottomButton = (
-    <PrimaryButton handleClick={handlePass}>
+    <PrimaryButton onClick={onPass}>
       <ButtonText>Ceder el turno</ButtonText>
     </PrimaryButton>
   )
