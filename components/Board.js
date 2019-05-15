@@ -84,12 +84,8 @@ const StoneStyle = css`
 export default class Board extends React.Component{
   constructor(props) {
     super(props);
-    this.state = {
-      board: (props.board || Array.from(Array(boardSize), () => new Array(boardSize).fill(''))),
-      blackSymbol: props.blackSymbol,
-      whiteSymbol: props.whiteSymbol,
-      currentPlayer: props.currentPlayer
-    }
+    this.board = props.board || Array.from(Array(boardSize), () => new Array(boardSize).fill(''));
+    this.grid = this.createBoardCells(this.board.length);
   }
 
   createBoardCells(){
@@ -104,34 +100,39 @@ export default class Board extends React.Component{
   }
 
   createStone(sym, posX, posY, hide){
+    let callback = hide ? ()=>this.props.handleStonePlaced(posX, posY) : null;
     switch (sym) {
-      case this.state.blackSymbol:
-        return <BlackStone css={StoneStyle} hide={hide}
-          onClick={() => hide ? this.props.onStonePlaced(posX, posY):null}/>
-      case this.state.whiteSymbol:
-        return <WhiteStone css={StoneStyle} hide={hide}
-          onClick={() => hide ? this.props.onStonePlaced(posX, posY):null}/>
+      case this.props.blackSymbol:
+        return <BlackStone css={StoneStyle} hide={hide} onClick={callback}/>
+      case this.props.whiteSymbol:
+        return <WhiteStone css={StoneStyle} hide={hide} onClick={callback}/>
       default:
-        return this.createStone(this.state.currentPlayer, rowIndex, colIndex, true)
+        return this.createStone(this.props.currentPlayer, posX, posY, true)
     }
   }
 
+  componentWillUpdate(nextProps){
+    this.board = nextProps.board;
+  }
+
   render(){
-    let stoneCells = this.state.board.map((row,rowIndex)=>(
+    console.time('Board created');
+    let stoneCells = this.board.map((row,rowIndex)=>(
       <tr key={rowIndex}>
-        {this.state.board[rowIndex].map((item, colIndex) => (
+        {this.board[rowIndex].map((item, colIndex) => (
           <td key={colIndex} style={{position:'relative'}}>
             {this.createStone(item, rowIndex, colIndex)}
           </td>
         ))}
       </tr>
     ))
+    console.timeEnd('Board created');
 
     return (
       <StyledBoard {...this.props}>
         <StyledBoardGridCellsContainer>
           <tbody>
-            {this.createBoardCells(this.state.board.length)}
+            {this.grid}
           </tbody>
         </StyledBoardGridCellsContainer>
         <StyledStonesContainer>
