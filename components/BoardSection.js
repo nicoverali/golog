@@ -71,13 +71,13 @@ const CompetitorStatsCSS = {
   height: '100%'
 }
 
-const BoardSection = ({onPlay, onPass, isAbleToPlay, competitorA, competitorB, board, ...props}) => (
+const BoardSection = ({onPlay, onPass, isAbleToPlay, competitorA, competitorB, currentPlayer, board, ...props}) => (
   <StyledMainContainer>
     <div css={LeftPanelCSS}>
       <div css={H1ContainerCSS}>
         <StyledH1>Golog.</StyledH1>
       </div>
-      <StyledGoPlayState onPlay={onPlay} onPass={onPass} isAbleToPlay={isAbleToPlay}/>
+      <StyledGoPlayState onPlay={onPlay} onPass={onPass} isAbleToPlay={isAbleToPlay} currentPlayer={currentPlayer}/>
       <CompetitorStatsContainer>
         <CompetitorStats css={{...CompetitorStatsCSS, marginRight:'8px'}}
           name={competitorA.name} icon={competitorA.icon}
@@ -90,7 +90,7 @@ const BoardSection = ({onPlay, onPass, isAbleToPlay, competitorA, competitorB, b
     <div css={RightPanelCSS}>
       <SquareBoardContainer parentHeight='80vh'
         blackSymbol={board.blackSymbol} whiteSymbol={board.whiteSymbol} board={board.board}
-        currentPlayer={board.currentPlayer} onStonePlaced={board.handleStonePlaced}/>
+        currentPlayer={board.currentPlayer} handleStonePlaced={board.handleStonePlaced}/>
     </div>
   </StyledMainContainer>
 )

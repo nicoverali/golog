@@ -3,7 +3,7 @@ import CurrentPlayTimer from './CurrentPlayTimer';
 import DoubleVerticalButtons from './DoubleVerticalButtons';
 import PrimaryButton from './PrimaryButton';
 import {ButtonText} from './utils/Typography';
-import {BlackStone} from './Stone';
+import {BlackStone, WhiteStone} from './Stone';
 
 const StyledContainer = styled.div`
   border: 1px solid ${props => props.theme.color.lightDark4};
@@ -19,8 +19,7 @@ const StyledContainer = styled.div`
   }
 `
 
-const GoPlayState = ({onPlay, onPass, isAbleToPlay, ...props}) => {
-  console.log(isAbleToPlay);
+const GoPlayState = ({onPlay, onPass, isAbleToPlay, currentPlayer, ...props}) => {
   let topButton = (
     <PrimaryButton onClick={onPlay} disabled={!isAbleToPlay}>
       <ButtonText>Enviar jugada</ButtonText>
@@ -33,12 +32,23 @@ const GoPlayState = ({onPlay, onPass, isAbleToPlay, ...props}) => {
     </PrimaryButton>
   )
 
+  let stone = createStone(currentPlayer.symbol);
+
   return (
     <StyledContainer {...props}>
-      <CurrentPlayTimer stone={<BlackStone/>} playerName='Nico' minutes={10} seconds={0}/>
+      <CurrentPlayTimer stone={stone} playerName={currentPlayer.name} minutes={10} seconds={0}/>
       <DoubleVerticalButtons topButton={topButton} bottomButton={bottomButton}/>
     </StyledContainer>
   )
+}
+
+function createStone(sym){
+  switch (sym) {
+    case 'b':
+      return <BlackStone/>
+    case 'w':
+      return <WhiteStone/>
+  }
 }
 
 export default GoPlayState;
