@@ -13,11 +13,18 @@ export default class Go extends React.Component{
     super(props);
     this.competitorA = {
       name: props.firstName,
-      icon: 'User'
+      icon: 'User',
+      captures: 0,
+      stones: 0,
+      tempScore: {}
     }
     this.competitorB = {
       name: props.secondName,
-      icon: 'User'
+      icon: 'User',
+      captures: 0,
+      stones: 0,
+      tempScore: {}
+
     }
     this.state = {
       lastDidPass: false,
@@ -61,11 +68,14 @@ export default class Go extends React.Component{
 
   handlePengineSuccess(prologVar){
     let board = this.state.board;
+    let currentPlayer = this.state.currentPlayer;
     board.board = prologBoardToJs(prologVar.UPB);
+    currentPlayer.tempScore.captures = prologVar.CC;
     this.setState({
       tempPengineBoard: prologVar.UPB,
       board: board,
-      isAbleToPlay: true
+      isAbleToPlay: true,
+      currentPlayer: currentPlayer
     })
   }
 
@@ -77,18 +87,22 @@ export default class Go extends React.Component{
   handleStonePlaced(x, y){
     let currentPlayer = this.state.board.currentPlayer;
     let board = jsBoardToProlog(this.state.pengineBoard);
-    let query = `goPlay(${x}, ${y}, ${currentPlayer}, ${board}, UPB)`;
+    let query = `goPlay(${x}, ${y}, ${currentPlayer}, ${board}, UPB, CC)`;
     this.state.pengine.ask(query);
   }
 
   handlePlay(){
     this.setState((state) => {
       let board = state.board;
+      let nextPlayer = this.changeCompetitor(state.currentPlayer);
       board.currentPlayer = board.currentPlayer == board.blackSymbol ? board.whiteSymbol:board.blackSymbol;
+      state.currentPlayer.captures += state.currentPlayer.tempScore.captures;
+      state.currentPlayer.stones++;
+      nextPlayer.stones -= state.currentPlayer.tempScore.captures;
       return {
         board: board,
         pengineBoard: state.tempPengineBoard,
-        currentPlayer: this.changeCompetitor(state.currentPlayer),
+        currentPlayer: nextPlayer,
         lastDidPass: false,
         isAbleToPlay: false
       }
@@ -103,6 +117,7 @@ export default class Go extends React.Component{
       let board = state.board;
       board.board = prologBoardToJs(state.pengineBoard);
       board.currentPlayer = board.currentPlayer == board.blackSymbol ? board.whiteSymbol:board.blackSymbol;
+      state.currentPlayer.tempScore.captures = 0;
       return {
         board: board,
         lastDidPass: true,
