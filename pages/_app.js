@@ -5,10 +5,17 @@ import MainLayout from '../layouts/MainLayout';
 import theme from '../components/theme';
 
 const GlobalStyle = createGlobalStyle`
+  *{
+    color: ${theme.color.textColor};
+  }
+
+  svg, path{
+    fill: ${theme.color.textColor};
+  }
   body {
     margin: 0px;
     overflow: hidden;
-    background-image: url('static/images/background.png');
+    background-image: url('static/images/${theme.background}');
   }
 `
 
