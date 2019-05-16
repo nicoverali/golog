@@ -71,7 +71,7 @@ const StoneStyle = css`
   height: auto;
   margin: 0%;
   opacity: 1;
-  transition: opacity 150ms ease-in-out;
+  transition: opacity 150ms ease-out;
 
   ${props => props.hide && css`
     opacity: 0;
@@ -84,11 +84,12 @@ const StoneStyle = css`
 export default class Board extends React.Component{
   constructor(props) {
     super(props);
-    this.board = props.board || Array.from(Array(boardSize), () => new Array(boardSize).fill(''));
-    this.grid = this.createBoardCells(this.board.length);
+    let board = props.board || Array.from(Array(boardSize), () => new Array(boardSize).fill(''));
+    this.stones = this.createStoneCells(board, props.currentPlayer);
+    this.grid = this.createBoardCells(board.length);
   }
 
-  createBoardCells(){
+  createBoardCells(boardSize){
     let grid = Array.from(Array(boardSize-1), () => new Array(boardSize-1).fill(''))
     return grid.map((row,rowIndex) => (
       <StyledRow key={rowIndex}>
@@ -99,7 +100,28 @@ export default class Board extends React.Component{
     ))
   }
 
-  createStone(sym, posX, posY, hide){
+  createStoneCells(board, currentPlayer){
+    let boardSize = board.length;
+    let stoneCells = new Array(boardSize);
+    for (var i = 0; i < boardSize; i++) {
+      let row = new Array(boardSize);
+      for (var j = 0; j < boardSize; j++) {
+        row[j] = (
+          <td key={j} style={{position:'relative'}}>
+            {this.createStone(board[i][j], i, j, currentPlayer)}
+          </td>
+        )
+      }
+      stoneCells[i] = (
+        <tr key={i}>
+          {row}
+        </tr>
+      );
+    }
+    return stoneCells;
+  }
+
+  createStone(sym, posX, posY, currentPlayer, hide){
     let callback = hide ? ()=>this.props.handleStonePlaced(posX, posY) : null;
     switch (sym) {
       case this.props.blackSymbol:
@@ -107,26 +129,15 @@ export default class Board extends React.Component{
       case this.props.whiteSymbol:
         return <WhiteStone css={StoneStyle} hide={hide} onClick={callback}/>
       default:
-        return this.createStone(this.props.currentPlayer, posX, posY, true)
+        return this.createStone(currentPlayer, posX, posY, currentPlayer, true)
     }
   }
 
   componentWillUpdate(nextProps){
-    this.board = nextProps.board;
+    this.stones = this.createStoneCells(nextProps.board, nextProps.currentPlayer);
   }
 
   render(){
-    console.time('Board created');
-    let stoneCells = this.board.map((row,rowIndex)=>(
-      <tr key={rowIndex}>
-        {this.board[rowIndex].map((item, colIndex) => (
-          <td key={colIndex} style={{position:'relative'}}>
-            {this.createStone(item, rowIndex, colIndex)}
-          </td>
-        ))}
-      </tr>
-    ))
-    console.timeEnd('Board created');
 
     return (
       <StyledBoard {...this.props}>
@@ -137,7 +148,7 @@ export default class Board extends React.Component{
         </StyledBoardGridCellsContainer>
         <StyledStonesContainer>
           <tbody>
-            {stoneCells}
+            {this.stones}
           </tbody>
         </StyledStonesContainer>
       </StyledBoard>
