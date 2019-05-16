@@ -33,7 +33,7 @@ const CompetitorsBody = ({subtitle, competitors, buttonConfig, ...props}) => (
         <Quote css={QuoteStyle}>VS</Quote>
         <Competitor icon={competitors[1].icon} name={competitors[1].name}/>
       </StyledCompetitorsDiv>
-      <Link prefetch href={buttonConfig.href}>
+      <Link prefetch href={buttonConfig.href} as={buttonConfig.hrefAs || buttonConfig.href}>
         <a>
           <PrimaryButton width="270px">
             <ButtonText>{buttonConfig.text}</ButtonText>

@@ -2,14 +2,21 @@ import BoardSection from '../components/BoardSection';
 
 export default class Go extends React.Component{
 
+  static getInitialProps({query}){
+    return {
+      firstName: query.firstName,
+      secondName: query.secondName
+    };
+  }
+
   constructor(props){
     super(props);
     this.competitorA = {
-      name:'Nico',
-      icon:'User'
+      name: props.firstName,
+      icon: 'User'
     }
     this.competitorB = {
-      name: 'Carlos',
+      name: props.secondName,
       icon: 'User'
     }
     this.state = {
@@ -24,7 +31,7 @@ export default class Go extends React.Component{
     this.state.pengine = new Pengine({
         server: "http://localhost:3030/pengine",
         application: "proylcc",
-        ask: 'goStart(B, FP, SP, FS), boardAsMatrix(B, BM).',
+        ask: 'goStart(B, FP, SP, FS).',
         onsuccess: (r) => this.handleFirstRequest(r),
         destroy: false
       })
@@ -41,12 +48,11 @@ export default class Go extends React.Component{
       loaded: true,
       pengineBoard: prologVar.B,
       currentPlayer: this.competitorA,
-      realBoard: prologVar.BM,
       board: {
         blackSymbol: prologVar.FP,
         whiteSymbol: prologVar.SP,
         currentPlayer: prologVar.FP,
-        board: prologVar.BM,
+        board: prologBoardToJs(prologVar.B),
         handleStonePlaced: (x,y) => this.handleStonePlaced(x,y)
       },
 
@@ -55,7 +61,7 @@ export default class Go extends React.Component{
 
   handlePengineSuccess(prologVar){
     let board = this.state.board;
-    board.board = prologVar.BM;
+    board.board = prologBoardToJs(prologVar.UPB);
     this.setState({
       tempPengineBoard: prologVar.UPB,
       board: board,
@@ -71,7 +77,7 @@ export default class Go extends React.Component{
   handleStonePlaced(x, y){
     let currentPlayer = this.state.board.currentPlayer;
     let board = jsBoardToProlog(this.state.pengineBoard);
-    let query = `goPlay(${x}, ${y}, ${currentPlayer}, ${board}, UPB), boardAsMatrix(UPB, BM)`;
+    let query = `goPlay(${x}, ${y}, ${currentPlayer}, ${board}, UPB)`;
     this.state.pengine.ask(query);
   }
 
@@ -95,6 +101,7 @@ export default class Go extends React.Component{
     }
     this.setState((state)=>{
       let board = state.board;
+      board.board = prologBoardToJs(state.pengineBoard);
       board.currentPlayer = board.currentPlayer == board.blackSymbol ? board.whiteSymbol:board.blackSymbol;
       return {
         board: board,
@@ -134,4 +141,28 @@ function jsMatrixToProlog(matrix){
     return `${matrix.functor}(${matrix.args[0]}, ${jsMatrixToProlog(matrix.args[1])}, ${jsMatrixToProlog(matrix.args[2])}, ${jsMatrixToProlog(matrix.args[3])})`;
   }
   return matrix;
+}
+
+function prologBoardToJs(board){
+  let size = board[0];
+  let matrix = new Array(size);
+  let rows = new Array(size)
+  parseTree(board[1], rows);
+  for (var i = 0; i < rows.length; i++) {
+    let columns = new Array(size);
+    parseTree(rows[i], columns);
+    matrix[i] = columns;
+  }
+
+  return matrix;
+}
+
+function parseTree(tree, list){
+  if(tree && tree.functor == 'node'){
+    let rowNumber = tree.args[0];
+    let content = tree.args[1];
+    list[rowNumber] = content;
+    parseTree(tree.args[2], list);
+    parseTree(tree.args[3], list);
+  }
 }
