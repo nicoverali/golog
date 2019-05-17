@@ -16,21 +16,22 @@ export default class Go extends React.Component{
       icon: 'User',
       captures: 0,
       stones: 0,
-      tempScore: {}
+      territory: 0
     }
     this.competitorB = {
       name: props.secondName,
       icon: 'User',
       captures: 0,
       stones: 0,
-      tempScore: {}
+      territory: 0
 
     }
     this.state = {
       lastDidPass: false,
       isAbleToPlay: false,
       loaded: false,
-      pengine: null
+      pengine: null,
+      territoryPengine: null
     }
   }
 
@@ -40,6 +41,12 @@ export default class Go extends React.Component{
         application: "proylcc",
         ask: 'goStart(B, FP, SP, FS).',
         onsuccess: (r) => this.handleFirstRequest(r),
+        destroy: false
+      })
+    this.state.territoryPengine = new Pengine({
+        server: "http://localhost:3030/pengine",
+        application: "proylcc",
+        onsuccess: (r) => this.handleTerritoryReqSuccess(r.data[0]),
         destroy: false
       })
   }
@@ -66,11 +73,17 @@ export default class Go extends React.Component{
     });
   }
 
+  handleTerritoryReqSuccess(prologVar){
+    this.competitorA.territory = prologVar.CB;
+    this.competitorB.territory = prologVar.CW;
+    this.setState(this.state); // Force re-render
+  }
+
   handlePengineSuccess(prologVar){
     let board = this.state.board;
     let currentPlayer = this.state.currentPlayer;
     board.board = prologBoardToJs(prologVar.UPB);
-    currentPlayer.tempScore.captures = prologVar.CC;
+    currentPlayer.tempCaptures = prologVar.CC;
     this.setState({
       tempPengineBoard: prologVar.UPB,
       board: board,
@@ -93,12 +106,14 @@ export default class Go extends React.Component{
 
   handlePlay(){
     this.setState((state) => {
+      let prologBoard = jsBoardToProlog(state.tempPengineBoard);
+      this.askForTerritory(prologBoard);
       let board = state.board;
       let nextPlayer = this.changeCompetitor(state.currentPlayer);
       board.currentPlayer = board.currentPlayer == board.blackSymbol ? board.whiteSymbol:board.blackSymbol;
-      state.currentPlayer.captures += state.currentPlayer.tempScore.captures;
+      state.currentPlayer.captures += state.currentPlayer.tempCaptures;
       state.currentPlayer.stones++;
-      nextPlayer.stones -= state.currentPlayer.tempScore.captures;
+      nextPlayer.stones -= state.currentPlayer.tempCaptures;
       return {
         board: board,
         pengineBoard: state.tempPengineBoard,
@@ -117,13 +132,18 @@ export default class Go extends React.Component{
       let board = state.board;
       board.board = prologBoardToJs(state.pengineBoard);
       board.currentPlayer = board.currentPlayer == board.blackSymbol ? board.whiteSymbol:board.blackSymbol;
-      state.currentPlayer.tempScore.captures = 0;
+      state.currentPlayer.tempCaptures = 0;
       return {
         board: board,
         lastDidPass: true,
         currentPlayer: this.changeCompetitor(state.currentPlayer)
       }
     })
+  }
+
+  askForTerritory(board){
+    let query = `goTerritory(${board}, CB, CW)`;
+    this.state.territoryPengine.ask(query);
   }
 
   changeCompetitor(current){
