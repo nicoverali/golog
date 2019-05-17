@@ -39,7 +39,7 @@ export default class Go extends React.Component{
     this.state.pengine = new Pengine({
         server: "http://localhost:3030/pengine",
         application: "proylcc",
-        ask: 'goStart(B, FP, SP, FS).',
+        ask: 'goStart(B, FP, SP).',
         onsuccess: (r) => this.handleFirstRequest(r),
         destroy: false
       })
