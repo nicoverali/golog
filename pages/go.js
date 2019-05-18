@@ -18,7 +18,7 @@ export default class Go extends React.Component{
     }
     else{
       let nameA = props.firstName || 'Jugador 1';
-      let nameB = props.secondName || 'Jugador 1';
+      let nameB = props.secondName || 'Jugador 2';
       this.competitorA = this.createCompetitor(nameA, 'User');
       this.competitorB = this.createCompetitor(nameB, 'User');
     }
@@ -39,6 +39,7 @@ export default class Go extends React.Component{
       stones: 0,
       captures: 0,
       territory: 0,
+      getPuntaje(){return this.stones + this.territory}
     }
   }
 
@@ -106,8 +107,7 @@ export default class Go extends React.Component{
 
 
   handlePengineFailure(r){
-    console.log('Falure !!!!');
-    console.log(r);
+    alert('Movimiento suicida.');
   }
 
   handleStonePlaced(x, y){
@@ -144,20 +144,31 @@ export default class Go extends React.Component{
 
   handlePass(){
     if(this.state.lastDidPass){
-      console.log('Fin del juego !!');
+      this.showEndOfGame();
+      this.setState((state)=>{
+        let board = state.board;
+        board.isBoardActive = false;
+        return {
+          board: board,
+          isAbleToPlay: false
+        }
+      })
     }
-    this.setState((state)=>{
-      let board = state.board;
-      board.board = prologBoardToJs(state.pengineBoard);
-      board.currentPlayer = board.currentPlayer == board.blackSymbol ? board.whiteSymbol:board.blackSymbol;
-      board.isBoardActive = this.props.vsIA ? !board.isBoardActive : board.isBoardActive;
-      state.currentPlayer.tempCaptures = 0;
-      return {
-        board: board,
-        lastDidPass: true,
-        currentPlayer: this.changeCompetitor(state.currentPlayer)
-      }
-    })
+    else{
+      this.setState((state)=>{
+        let board = state.board;
+        board.board = prologBoardToJs(state.pengineBoard);
+        board.currentPlayer = board.currentPlayer == board.blackSymbol ? board.whiteSymbol:board.blackSymbol;
+        board.isBoardActive = this.props.vsIA ? !board.isBoardActive : board.isBoardActive;
+        state.currentPlayer.tempCaptures = 0;
+        return {
+          board: board,
+          isAbleToPlay: false,
+          lastDidPass: true,
+          currentPlayer: this.changeCompetitor(state.currentPlayer)
+        }
+      })
+    }
   }
 
   askForTerritory(board){
@@ -172,6 +183,20 @@ export default class Go extends React.Component{
 
   changeCompetitor(current){
     return current == this.competitorA ? this.competitorB : this.competitorA;
+  }
+
+  showEndOfGame(){
+    let scoreA = this.competitorA.getPuntaje();
+    let scoreB = this.competitorB.getPuntaje();
+    if(scoreA == scoreB){
+      alert(`¡ Empate ! \n Puntaje: ${scoreA}`);
+    }
+    else if(scoreA > scoreB){
+      alert(`¡ Ganaste ${this.competitorA.name} ! \n Puntaje: ${scoreA}`);
+    }
+    else{
+      alert(`¡ Ganaste ${this.competitorB.name} ! \n Puntaje: ${scoreB}`);
+    }
   }
 
   render(){
