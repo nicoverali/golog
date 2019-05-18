@@ -15,7 +15,10 @@ const PrimaryButton = styled(Button)`
   height: ${props => props.height || '51px'};
   width: ${props => props.width || '100%'};
   border-radius: 3px;
-  color: white;
+
+  & > * {
+    color: white;
+  }
 
   // If is not disabled
   ${props => !props.disabled && css`
