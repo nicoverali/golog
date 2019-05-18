@@ -30,7 +30,6 @@ const CurrentPlayTimer = ({stone, playerName, minutes, seconds, small, ...props}
     </StyledStoneContainer>
     <StyledInfoContainer className={small ? 'small' : ''}>
       <BodyCopy css={{display:'block'}}>{playerName}</BodyCopy>
-      <BodyCopy light>Restante: {minutes}:{formatSeconds(seconds)}</BodyCopy>
     </StyledInfoContainer>
   </div>
 )

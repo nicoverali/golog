@@ -5,33 +5,40 @@ export default class Go extends React.Component{
   static getInitialProps({query}){
     return {
       firstName: query.firstName,
-      secondName: query.secondName
+      secondName: query.secondName,
+      vsIA: query.vsIA
     };
   }
 
   constructor(props){
     super(props);
-    this.competitorA = {
-      name: props.firstName,
-      icon: 'User',
-      captures: 0,
-      stones: 0,
-      territory: 0
+    if(props.vsIA){
+      this.competitorA = this.createCompetitor('Tú', 'User');
+      this.competitorB = this.createCompetitor('Golguito', 'Golguito');
     }
-    this.competitorB = {
-      name: props.secondName,
-      icon: 'User',
-      captures: 0,
-      stones: 0,
-      territory: 0
+    else{
+      let nameA = props.firstName || 'Jugador 1';
+      let nameB = props.secondName || 'Jugador 1';
+      this.competitorA = this.createCompetitor(nameA, 'User');
+      this.competitorB = this.createCompetitor(nameB, 'User');
+    }
 
-    }
     this.state = {
       lastDidPass: false,
       isAbleToPlay: false,
       loaded: false,
       pengine: null,
       territoryPengine: null
+    }
+  }
+
+  createCompetitor(name, icon){
+    return {
+      name: name,
+      icon: icon,
+      stones: 0,
+      captures: 0,
+      territory: 0,
     }
   }
 
@@ -63,6 +70,7 @@ export default class Go extends React.Component{
       pengineBoard: prologVar.B,
       currentPlayer: this.competitorA,
       board: {
+        isBoardActive: true,
         blackSymbol: prologVar.FP,
         whiteSymbol: prologVar.SP,
         currentPlayer: prologVar.FP,
@@ -73,24 +81,29 @@ export default class Go extends React.Component{
     });
   }
 
-  handleTerritoryReqSuccess(prologVar){
-    this.competitorA.territory = prologVar.CB;
-    this.competitorB.territory = prologVar.CW;
-    this.setState(this.state); // Force re-render
-  }
-
   handlePengineSuccess(prologVar){
     let board = this.state.board;
     let currentPlayer = this.state.currentPlayer;
     board.board = prologBoardToJs(prologVar.UPB);
     currentPlayer.tempCaptures = prologVar.CC;
     this.setState({
+      lastStonePlaced: [prologVar.X, prologVar.Y],
       tempPengineBoard: prologVar.UPB,
       board: board,
       isAbleToPlay: true,
       currentPlayer: currentPlayer
-    })
+    });
+    if(this.props.vsIA && !this.state.board.isBoardActive){
+      this.handlePlay();
+    }
   }
+
+  handleTerritoryReqSuccess(prologVar){
+    this.competitorA.territory = prologVar.CB;
+    this.competitorB.territory = prologVar.CW;
+    this.setState(this.state); // Force re-render
+  }
+
 
   handlePengineFailure(r){
     console.log('Falure !!!!');
@@ -100,7 +113,7 @@ export default class Go extends React.Component{
   handleStonePlaced(x, y){
     let currentPlayer = this.state.board.currentPlayer;
     let board = jsBoardToProlog(this.state.pengineBoard);
-    let query = `goPlay(${x}, ${y}, ${currentPlayer}, ${board}, UPB, CC)`;
+    let query = `goPlay(${x}, ${y}, ${currentPlayer}, ${board}, UPB, CC), X = ${x}, Y = ${y}`;
     this.state.pengine.ask(query);
   }
 
@@ -108,9 +121,14 @@ export default class Go extends React.Component{
     this.setState((state) => {
       let prologBoard = jsBoardToProlog(state.tempPengineBoard);
       this.askForTerritory(prologBoard);
+      if(this.props.vsIA && this.state.board.isBoardActive){
+        this.askForIAMove(this.state.lastStonePlaced, prologBoard);
+      }
+
       let board = state.board;
       let nextPlayer = this.changeCompetitor(state.currentPlayer);
       board.currentPlayer = board.currentPlayer == board.blackSymbol ? board.whiteSymbol:board.blackSymbol;
+      board.isBoardActive = this.props.vsIA ? !board.isBoardActive : board.isBoardActive;
       state.currentPlayer.captures += state.currentPlayer.tempCaptures;
       state.currentPlayer.stones++;
       nextPlayer.stones -= state.currentPlayer.tempCaptures;
@@ -132,6 +150,7 @@ export default class Go extends React.Component{
       let board = state.board;
       board.board = prologBoardToJs(state.pengineBoard);
       board.currentPlayer = board.currentPlayer == board.blackSymbol ? board.whiteSymbol:board.blackSymbol;
+      board.isBoardActive = this.props.vsIA ? !board.isBoardActive : board.isBoardActive;
       state.currentPlayer.tempCaptures = 0;
       return {
         board: board,
@@ -144,6 +163,11 @@ export default class Go extends React.Component{
   askForTerritory(board){
     let query = `goTerritory(${board}, CB, CW)`;
     this.state.territoryPengine.ask(query);
+  }
+
+  askForIAMove(lastStonePlaced, board){
+    let query = `goIA(${lastStonePlaced[0]}, ${lastStonePlaced[1]}, ${board}, UPB, CC)`;
+    this.state.pengine.ask(query);
   }
 
   changeCompetitor(current){

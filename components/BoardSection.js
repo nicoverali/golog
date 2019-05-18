@@ -89,7 +89,8 @@ const BoardSection = ({onPlay, onPass, isAbleToPlay, competitorA, competitorB, c
     </div>
     <div css={RightPanelCSS}>
       <SquareBoardContainer parentHeight='80vh'
-        blackSymbol={board.blackSymbol} whiteSymbol={board.whiteSymbol} board={board.board}
+        blackSymbol={board.blackSymbol} whiteSymbol={board.whiteSymbol}
+        board={board.board} isBoardActive={board.isBoardActive}
         currentPlayer={board.currentPlayer} handleStonePlaced={board.handleStonePlaced}/>
     </div>
   </StyledMainContainer>

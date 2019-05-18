@@ -3,7 +3,8 @@ import CompetitorsBody from '../components/bodies/CompetitorsBody';
 
 const buttonConfig = {
     text: 'Comenzar',
-    href: '/go'
+    href: `/go?vsIA=true`,
+    hrefAs: '/go',
   };
 
 let competitors = [

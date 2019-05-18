@@ -36,7 +36,7 @@ const GoPlayState = ({onPlay, onPass, isAbleToPlay, currentPlayer, ...props}) =>
 
   return (
     <StyledContainer {...props}>
-      <CurrentPlayTimer stone={stone} playerName={currentPlayer.name} minutes={10} seconds={0}/>
+      <CurrentPlayTimer stone={stone} playerName={currentPlayer.name}/>
       <DoubleVerticalButtons topButton={topButton} bottomButton={bottomButton}/>
     </StyledContainer>
   )

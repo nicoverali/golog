@@ -75,6 +75,9 @@ const StoneStyle = css`
 
   ${props => props.hide && css`
     opacity: 0;
+  `}
+
+  ${props => props.hide && props.isBoardActive && css`
     &:hover{
       opacity: 0.7;
     }
@@ -85,7 +88,7 @@ export default class Board extends React.Component{
   constructor(props) {
     super(props);
     let board = props.board || Array.from(Array(boardSize), () => new Array(boardSize).fill(''));
-    this.stones = this.createStoneCells(board, props.currentPlayer);
+    this.stones = this.createStoneCells(board, props.currentPlayer, props.isBoardActive);
     this.grid = this.createBoardCells(board.length);
   }
 
@@ -100,7 +103,7 @@ export default class Board extends React.Component{
     ))
   }
 
-  createStoneCells(board, currentPlayer){
+  createStoneCells(board, currentPlayer, isBoardActive){
     let boardSize = board.length;
     let stoneCells = new Array(boardSize);
     for (var i = 0; i < boardSize; i++) {
@@ -108,7 +111,7 @@ export default class Board extends React.Component{
       for (var j = 0; j < boardSize; j++) {
         row[j] = (
           <td key={j} style={{position:'relative'}}>
-            {this.createStone(board[i][j], i, j, currentPlayer)}
+            {this.createStone(board[i][j], i, j, currentPlayer, isBoardActive)}
           </td>
         )
       }
@@ -121,24 +124,23 @@ export default class Board extends React.Component{
     return stoneCells;
   }
 
-  createStone(sym, posX, posY, currentPlayer, hide){
-    let callback = hide ? ()=>this.props.handleStonePlaced(posX, posY) : null;
+  createStone(sym, posX, posY, currentPlayer, isBoardActive, hide){
+    let callback = hide && isBoardActive ? ()=>this.props.handleStonePlaced(posX, posY) : null;
     switch (sym) {
       case this.props.blackSymbol:
-        return <BlackStone css={StoneStyle} hide={hide} onClick={callback}/>
+        return <BlackStone css={StoneStyle} hide={hide} isBoardActive={isBoardActive} onClick={callback}/>
       case this.props.whiteSymbol:
-        return <WhiteStone css={StoneStyle} hide={hide} onClick={callback}/>
+        return <WhiteStone css={StoneStyle} hide={hide} isBoardActive={isBoardActive} onClick={callback}/>
       default:
-        return this.createStone(currentPlayer, posX, posY, currentPlayer, true)
+        return this.createStone(currentPlayer, posX, posY, currentPlayer, isBoardActive, true);
     }
   }
 
   componentWillUpdate(nextProps){
-    this.stones = this.createStoneCells(nextProps.board, nextProps.currentPlayer);
+    this.stones = this.createStoneCells(nextProps.board, nextProps.currentPlayer, nextProps.isBoardActive);
   }
 
   render(){
-
     return (
       <StyledBoard {...this.props}>
         <StyledBoardGridCellsContainer>
