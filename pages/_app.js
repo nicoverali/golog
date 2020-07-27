@@ -38,7 +38,7 @@ export default class GologApp extends App {
       <Container>
         <Head>
           <script src="http://localhost:3030/vendor/jquery/jquery-2.0.3.min.js"></script>
-          <script src="http://localhost:3030/pengine/pengines.js"></script>
+          {/* <script src="http://localhost:3030/pengine/pengines.js"></script> */}
           <link href="https://fonts.googleapis.com/css?family=Arvo:400,700|Open+Sans:300,400,600,700" rel="stylesheet"/>
         </Head>
         <GlobalStyle/>
