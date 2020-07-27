@@ -4,13 +4,14 @@ import Head from 'next/head';
 import { createGlobalStyle, ThemeProvider} from 'styled-components'
 import MainLayout from '../layouts/MainLayout';
 import theme from '../components/theme';
+import DemoVersionNotification from '../components/DemoVersionNotification.js';
 
 const GlobalStyle = createGlobalStyle`
   *{
     color: ${theme.color.textColor};
   }
 
-  svg, path{
+  svg{
     fill: ${theme.color.textColor};
   }
   body {
@@ -47,6 +48,7 @@ export default class GologApp extends App {
             <Component {...pageProps}/>
           </MainLayout>
         </ThemeProvider>
+        <DemoVersionNotification/>
       </Container>
 )
   }
